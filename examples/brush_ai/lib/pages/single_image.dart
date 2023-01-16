@@ -24,7 +24,7 @@ class _SingleImagePageState extends State<SingleImagePage> {
     client = StabilityApiClient.init(dotenv.get('STABILITY_API_KEY'));
     queryController = TextEditingController();
     queryController.addListener(() {
-      if (queryController.text != null && queryController.text.isNotEmpty) {
+      if (queryController.text.isNotEmpty) {
         setState(() {
           hasInput = true;
         });
@@ -82,6 +82,7 @@ class _SingleImagePageState extends State<SingleImagePage> {
               const SizedBox(height: 32),
               TextField(
                 controller: queryController,
+                maxLines: 2,
               ),
               const SizedBox(height: 32),
               ElevatedButton(

@@ -1,3 +1,8 @@
+## 0.1.1
+
+* Doc and example updates
+* Minor fixes and improvements
+
 ## 0.1.0
 
 * Add more examples on usage
