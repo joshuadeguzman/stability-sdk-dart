@@ -1,6 +1,6 @@
 name: stability_sdk
-description: An implementation of Stability AI SDK in Dart.
-version: 0.0.3
+description: An implementation of Stability AI SDK in Dart. Stability AI is a solution studio dedicated to innovating ideas.
+version: 0.1.0
 homepage: https://github.com/joshuadeguzman/stability-sdk-dart
 
 environment:

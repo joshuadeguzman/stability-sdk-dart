@@ -1,3 +1,9 @@
+## 0.1.0
+
+* Add more examples on usage
+* Add more Stability AI entities
+* Minor bug fixes & improvements
+
 ## 0.0.3
 
 * Improvements on the example app
