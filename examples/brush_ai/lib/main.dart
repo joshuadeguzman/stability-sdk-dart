@@ -36,9 +36,11 @@ class _MyHomePageState extends State<MyHomePage> {
   late StabilityApiClient client;
   late TextEditingController queryController;
   String? image;
+  late bool isLoading;
 
   @override
   void initState() {
+    isLoading = false;
     client = StabilityApiClient.init(dotenv.get('STABILITY_API_KEY'));
     queryController = TextEditingController();
 
@@ -51,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (answer?.artifacts.isNotEmpty == true) {
         setState(() {
           image = answer!.artifacts.first.getImage();
+          isLoading = false;
         });
       }
     });
@@ -63,33 +66,36 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            TextField(
-              controller: queryController,
-            ),
-            if (image != null)
-              CachedMemoryImage(
-                base64: image,
-                uniqueKey: image.toString(),
-              )
-            else
-              const CircularProgressIndicator.adaptive()
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              if (image != null && !isLoading)
+                CachedMemoryImage(
+                  base64: image,
+                  uniqueKey: image.toString(),
+                ),
+              if (isLoading) const CircularProgressIndicator(),
+              const SizedBox(height: 32),
+              TextField(
+                controller: queryController,
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  if (queryController.text.isNotEmpty) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    generateImage(queryController.text);
+                  }
+                },
+                child: const Text('Generate Image'),
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (queryController.text.isNotEmpty) {
-            generateImage(queryController.text);
-          }
-        },
-        tooltip: 'Generate Art',
-        child: const Icon(Icons.add),
       ),
     );
   }
