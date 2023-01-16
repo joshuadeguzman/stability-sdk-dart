@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:grpc/grpc.dart';
-import 'package:stability_sdk/src/data/answer.dart';
-import 'package:stability_sdk/src/data/request.dart';
+import '../data/answer.dart';
 import '../data/config.dart';
-import '../protos/generation.pbgrpc.dart';
+import '../protos/generation.pbgrpc.dart' as pb hide Answer;
 
 class StabilityApiClient {
   late final String _apiKey;
@@ -21,18 +20,15 @@ class StabilityApiClient {
     return client;
   }
 
-  late GenerationServiceClient generation = GenerationServiceClient(
+  late pb.GenerationServiceClient generation = pb.GenerationServiceClient(
     _channel,
     options: CallOptions(
       metadata: {'Authorization': "Bearer $_apiKey"},
     ),
   );
 
-  Stream<StabilityAnswer?> generateAsync(StabilityRequest request) {
-    final response = generation.generate(request.toRequest());
-
-    return response
-        .map((a) => StabilityAnswer.fromAnswer(a))
-        .asBroadcastStream();
+  Stream<Answer> generate(pb.Request request) {
+    final response = generation.generate(request);
+    return response.map((event) => Answer.toDomain(event)).asBroadcastStream();
   }
 }

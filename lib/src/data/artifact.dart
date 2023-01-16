@@ -1,19 +1,40 @@
 import 'dart:convert';
 
-import '../protos/generation.pbgrpc.dart';
+import '../protos/generation.pb.dart' as pb;
 
-class StabilityArtifact {
+class Artifact {
+  final int? id;
+  final String? mime;
+  final String? magic;
   final List<int>? binary;
+  final String? text;
+  final int? seed;
+  final String? uuid;
+  final int? size;
 
-  StabilityArtifact({
+  Artifact({
+    this.id,
+    this.mime,
+    this.magic,
     this.binary,
+    this.text,
+    this.seed,
+    this.uuid,
+    this.size,
   });
 
-  factory StabilityArtifact.fromAnswer(Artifact artifact) {
-    bool isImage = artifact.type == ArtifactType.ARTIFACT_IMAGE;
+  factory Artifact.toDomain(pb.Artifact artifact) {
+    bool isImage = artifact.type == pb.ArtifactType.ARTIFACT_IMAGE;
 
-    return StabilityArtifact(
+    return Artifact(
+      id: artifact.id.toInt(),
+      mime: artifact.mime,
+      magic: artifact.magic,
       binary: isImage ? artifact.binary : null,
+      text: isImage ? null : artifact.text,
+      seed: artifact.seed.toInt(),
+      uuid: artifact.uuid,
+      size: artifact.size.toInt(),
     );
   }
 

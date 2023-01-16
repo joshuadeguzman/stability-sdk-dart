@@ -2,7 +2,7 @@
 
 import 'dart:core';
 
-enum StabilityEngineType {
+enum EngineType {
   diffusion_v1('stable-diffusion-v1'),
   diffusion_v1_5('stable-diffusion-v1-5'),
   diffusion_512_v2_0('stable-diffusion-512-v2-0'),
@@ -12,7 +12,7 @@ enum StabilityEngineType {
   inpainting_v1_0('stable-inpainting-v1-0'),
   inpainting_v2_0('stable-inpainting-512-v2-0');
 
-  const StabilityEngineType(
+  const EngineType(
     this.id,
   );
 
