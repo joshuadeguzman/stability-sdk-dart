@@ -32,11 +32,11 @@ client.generate(request).listen((answer) {
 
 ```
 
-**Output**
+**Examples**
 
-|Prompt|Generated|
-|---|---|
-|![demo-gif](https://raw.githubusercontent.com/joshuadeguzman/stability-sdk-dart/main/docs/assets/demo/demo_output.gif)|![demo-image](https://raw.githubusercontent.com/joshuadeguzman/stability-sdk-dart/main/docs/assets/demo/demo_output.png)|
+Brush AI
+
+![brush-ai demo](https://raw.githubusercontent.com/joshuadeguzman/stability-sdk-dart/main/docs/assets/demo/demo_brush_ai.gif)
 
 
 *and more sample outputs...*

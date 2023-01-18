@@ -257,6 +257,7 @@ class _BrushAiPageState extends State<BrushAiPage> {
                             children: [
                               Expanded(
                                 child: TextField(
+                                  maxLines: 2,
                                   controller: queryController,
                                   style: const TextStyle(
                                     color: Colors.black,
