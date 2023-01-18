@@ -1,4 +1,7 @@
+import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:stability_sdk/stability_sdk.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,8 +24,15 @@ class _HomePageState extends State<HomePage> {
   late bool isDaVinciSelected;
   late bool isAngeloSelected;
 
+  late StabilityApiClient client;
+  late bool isBrushLoading;
+
+  String? image;
+
   @override
   void initState() {
+    client = StabilityApiClient.init(dotenv.get('STABILITY_API_KEY'));
+
     queryController = TextEditingController();
     queryController.addListener(() {
       setState(() {
@@ -49,6 +59,9 @@ class _HomePageState extends State<HomePage> {
 
     isDaVinciSelected = false;
     isAngeloSelected = false;
+
+    image = null;
+    isBrushLoading = false;
   }
 
   Widget buildMenu({
@@ -115,18 +128,43 @@ class _HomePageState extends State<HomePage> {
             ],
             borderRadius: BorderRadius.circular(32),
           ),
-          child: const Center(
-            child: Text(
-              'New Brush',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+          child: Center(
+            child: isBrushLoading
+                ? const CircularProgressIndicator(color: Colors.black)
+                : const Text(
+                    'New Brush',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> generateImage(String prompt) async {
+    setState(() {
+      isBrushLoading = true;
+      image = null;
+    });
+
+    final request = RequestBuilder(prompt)
+        .setHeight(512)
+        .setWidth(512)
+        .setEngineType(EngineType.inpainting_v2_0)
+        .setSampleCount(1)
+        .build();
+
+    client.generate(request).listen((answer) {
+      if (answer.artifacts?.isNotEmpty == true) {
+        setState(() {
+          image = answer.artifacts?.first.getImage();
+          isBrushLoading = false;
+        });
+      }
+    });
   }
 
   @override
@@ -163,158 +201,212 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.only(left: 24),
-              child: Text(
-                'What\'s on your mind today?',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: queryController,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'I want an image of a dog...',
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 250),
-              child: isStyleEnabled
-                  ? Column(
+              child: image != null && !isBrushLoading
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 24),
+                            child: Text(
+                              'Wow! That a great looking piece.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: CachedMemoryImage(
+                              base64: image,
+                              uniqueKey: image.toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 24),
                         const Padding(
                           padding: EdgeInsets.only(left: 24),
                           child: Text(
-                            'Select style',
+                            'What\'s on your mind today?',
                             style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  isArtistEnabled = true;
-
-                                  isOilPaintingSelected = true;
-                                  isSketchSelected = false;
-                                });
-                              },
-                              child: buildMenu(
-                                title: 'Oil Painting',
-                                imagePath: 'assets/images/oil_painting.png',
-                                isActive: isOilPaintingSelected,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: queryController,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    hintText: 'I want an image of a dog...',
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    focusedErrorBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                  ),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 32),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  isArtistEnabled = true;
+                            ],
+                          ),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          child: isStyleEnabled
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 24),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 24),
+                                      child: Text(
+                                        'Select style',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isArtistEnabled = true;
 
-                                  isOilPaintingSelected = false;
-                                  isSketchSelected = true;
-                                });
-                              },
-                              child: buildMenu(
-                                title: 'Pen/Sketch',
-                                imagePath: 'assets/images/sketch.png',
-                                isActive: isSketchSelected,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    )
-                  : const SizedBox(),
-            ),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: isArtistEnabled
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                                              isOilPaintingSelected = true;
+                                              isSketchSelected = false;
+                                            });
+                                          },
+                                          child: buildMenu(
+                                            title: 'Oil Painting',
+                                            imagePath:
+                                                'assets/images/oil_painting.png',
+                                            isActive: isOilPaintingSelected,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 32),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isArtistEnabled = true;
+
+                                              isOilPaintingSelected = false;
+                                              isSketchSelected = true;
+                                            });
+                                          },
+                                          child: buildMenu(
+                                            title: 'Pen/Sketch',
+                                            imagePath:
+                                                'assets/images/sketch.png',
+                                            isActive: isSketchSelected,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          child: isArtistEnabled
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 32),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 24),
+                                      child: Text(
+                                        'Select artist',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isDaVinciSelected = true;
+                                              isAngeloSelected = false;
+                                            });
+                                          },
+                                          child: buildMenu(
+                                            title: 'Da Vinci',
+                                            imagePath:
+                                                'assets/images/davinci.png',
+                                            isActive: isDaVinciSelected,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 32),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isDaVinciSelected = false;
+                                              isAngeloSelected = true;
+                                            });
+                                          },
+                                          child: buildMenu(
+                                            title: 'Michael Angelo',
+                                            imagePath:
+                                                'assets/images/michaelangelo.png',
+                                            isActive: isAngeloSelected,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(),
+                        ),
                         const SizedBox(height: 32),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 24),
-                          child: Text(
-                            'Select artist',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                            ),
+                        GestureDetector(
+                          child: buildGenerateButton(
+                            isActive: isAngeloSelected || isDaVinciSelected,
                           ),
+                          onTap: () {
+                            final style = isOilPaintingSelected
+                                ? 'oil painted by'
+                                : 'sketched by';
+                            final painter = isDaVinciSelected
+                                ? 'Leonardo Da Vinci'
+                                : 'Michael Angelo';
+                            final text =
+                                ' ${queryController.text}, $style $painter';
+                            generateImage(text);
+                          },
                         ),
-                        const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  isDaVinciSelected = true;
-                                  isAngeloSelected = false;
-                                });
-                              },
-                              child: buildMenu(
-                                title: 'Da Vinci',
-                                imagePath: 'assets/images/davinci.png',
-                                isActive: isDaVinciSelected,
-                              ),
-                            ),
-                            const SizedBox(width: 32),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  isDaVinciSelected = false;
-                                  isAngeloSelected = true;
-                                });
-                              },
-                              child: buildMenu(
-                                title: 'Michael Angelo',
-                                imagePath: 'assets/images/michaelangelo.png',
-                                isActive: isAngeloSelected,
-                              ),
-                            ),
-                          ],
-                        )
                       ],
-                    )
-                  : const SizedBox(),
+                    ),
             ),
-            const SizedBox(height: 32),
-            buildGenerateButton(
-              isActive: isAngeloSelected || isDaVinciSelected,
-            )
           ],
         ),
       ),
