@@ -130,7 +130,14 @@ class _BrushAiPageState extends State<BrushAiPage> {
           ),
           child: Center(
             child: isBrushLoading
-                ? const CircularProgressIndicator(color: Colors.black)
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                      strokeWidth: 2,
+                    ),
+                  )
                 : const Text(
                     'New Brush',
                     style: TextStyle(
