@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Add Brush AI example
+
 ## 0.1.1
 
 * Doc and example updates

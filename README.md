@@ -72,12 +72,11 @@ client.generate(request).listen((answer) {
 
 * [x] Text-to-image
 
+Upcoming
+
 * [ ] Image-to-image
-
 * [ ] Inpainting + Masking
-
 * [ ] CLIP guidance
-
 * [ ] Multi-prompting
 
 ## Connect
