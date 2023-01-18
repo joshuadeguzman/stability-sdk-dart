@@ -1,4 +1,5 @@
-import 'package:brush_ai/pages/home_page.dart';
+import 'package:brush_ai/pages/brush_ai_page.dart';
+import 'package:brush_ai/pages/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: MenuPage(),
     );
   }
 }

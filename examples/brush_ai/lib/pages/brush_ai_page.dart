@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:stability_sdk/stability_sdk.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class BrushAiPage extends StatefulWidget {
+  const BrushAiPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _HomePageState();
+    return _BrushAiPageState();
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _BrushAiPageState extends State<BrushAiPage> {
   late TextEditingController queryController;
 
   late bool isStyleEnabled;
