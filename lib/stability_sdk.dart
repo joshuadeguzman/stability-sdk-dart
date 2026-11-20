@@ -1,7 +1,16 @@
-library stability_sdk;
+/// A Dart client for the Stability AI REST API.
+///
+/// Start with [StabilityClient].
+library;
 
-export 'package:stability_sdk/src/client/stability_api.dart';
-export 'package:stability_sdk/src/data/request.dart' show RequestBuilder;
-export 'package:stability_sdk/src/data/engine.dart' show EngineType;
-export 'package:stability_sdk/src/data/artifact.dart' show Artifact;
-export 'package:stability_sdk/src/data/answer.dart' show Answer;
+import 'src/stability_client.dart';
+
+export 'src/models/exceptions.dart';
+export 'src/models/options.dart';
+export 'src/models/results.dart';
+export 'src/services/control.dart';
+export 'src/services/edit.dart';
+export 'src/services/generate.dart';
+export 'src/services/results.dart';
+export 'src/services/upscale.dart';
+export 'src/stability_client.dart';

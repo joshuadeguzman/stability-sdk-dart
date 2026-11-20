@@ -1,22 +1,28 @@
 name: stability_sdk
-description: An implementation of Stability AI SDK in Dart. Stability AI is a solution studio dedicated to innovating ideas.
-version: 0.1.2
+description: A Dart client for the Stability AI REST API. Generate, edit, upscale and control images with Stable Image and Stable Diffusion 3.5.
+version: 1.0.0
 homepage: https://github.com/joshuadeguzman/stability-sdk-dart
+repository: https://github.com/joshuadeguzman/stability-sdk-dart
+issue_tracker: https://github.com/joshuadeguzman/stability-sdk-dart/issues
+topics:
+  - stability-ai
+  - stable-diffusion
+  - image-generation
+  - ai
+  - api
+
+screenshots:
+  - description: How stability_sdk sends a request.
+    path: screenshots/how_it_works.png
+  - description: The example app in demo mode on iOS and Android, showing a saved sample.
+    path: screenshots/example_generate.png
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: ^3.5.0
 
 dependencies:
-  flutter:
-    sdk: flutter
-  protobuf: ^2.1.0
-  grpc: ^3.1.0
-  fixnum: ^1.0.1
+  http: ^1.2.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
-
-flutter:
+  lints: ^5.0.0
+  test: ^1.25.0
