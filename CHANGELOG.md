@@ -1,6 +1,6 @@
-## 1.0.0
+## 0.2.0
 
-A rewrite for the Stability AI REST API v2beta. See "Migrating from 0.x" in the README.
+A rewrite for the Stability AI REST API v2beta. The package stays below 1.0 while the API is in beta. See "Migrating from 0.1" in the README.
 
 * Add `StabilityClient` with `generate` (Ultra, Core, SD 3.5), `upscale` (Fast, Conservative, Creative), `edit` (Erase, Inpaint, Outpaint, Search and Replace, Search and Recolor, Remove Background, Replace Background and Relight), `control` (Sketch, Structure, Style Guide, Style Transfer) and `results` for async services.
 * Add typed options (`ImageAspectRatio`, `StylePreset`, `OutputFormat`, `Sd35Model`), results (`GeneratedImage`, `AsyncGeneration`) and one exception class per API error.

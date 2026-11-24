@@ -1,6 +1,6 @@
 name: stability_sdk
 description: A Dart client for the Stability AI REST API. Generate, edit, upscale and control images with Stable Image and Stable Diffusion 3.5.
-version: 1.0.0
+version: 0.2.0
 homepage: https://github.com/joshuadeguzman/stability-sdk-dart
 repository: https://github.com/joshuadeguzman/stability-sdk-dart
 issue_tracker: https://github.com/joshuadeguzman/stability-sdk-dart/issues

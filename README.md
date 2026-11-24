@@ -205,17 +205,17 @@ cd example
 flutter run --dart-define=STABILITY_API_KEY=your-key
 ```
 
-Without a key it runs in demo mode. It never calls the API, and the Generate tab shows saved 512 by 512 images from Stability's older Stable Diffusion 2 engine, made with version 0.x of this package. They are not Core, Ultra or SD 3.5 output. Editing needs a key.
+Without a key it runs in demo mode. It never calls the API, and the Generate tab shows saved 512 by 512 images from Stability's older Stable Diffusion 2 engine, made with version 0.1 of this package. They are not Core, Ultra or SD 3.5 output. Editing needs a key.
 
 | Generate | Edit |
 |---|---|
 | ![Generate tab on iOS and Android](screenshots/example_generate.png) | ![Edit tab on iOS and Android](screenshots/example_edit.png) |
 
-## Migrating from 0.x
+## Migrating from 0.1
 
-Version 1.0 is a rewrite for Stability AI's current REST API. Versions 0.x used the older gRPC API, which no longer gets new models or features.
+Version 0.2 is a rewrite for Stability AI's current REST API, which is still in beta (v2beta). Versions 0.1 and earlier used the older gRPC API, which no longer gets new models or features.
 
-| 0.x | 1.0 |
+| 0.1 | 0.2 |
 |---|---|
 | `StabilityApiClient.init(key)` | `StabilityClient(apiKey: key)` |
 | `RequestBuilder(prompt)...build()` and `client.generate(request).listen(...)` | `await stability.generate.core(prompt: prompt)` |
