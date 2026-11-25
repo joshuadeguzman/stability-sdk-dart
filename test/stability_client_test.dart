@@ -166,6 +166,8 @@ void main() {
           c.generate.ultra(prompt: 'a', strength: 0.5),
       'SD 3.5 image to image without strength': (c) =>
           c.generate.sd35(prompt: 'a', image: png),
+      'SD 3.5 with a strength but no image': (c) =>
+          c.generate.sd35(prompt: 'a', strength: 0.5),
       'SD 3.5 image to image with an aspect ratio': (c) => c.generate.sd35(
             prompt: 'a',
             image: png,
@@ -251,6 +253,23 @@ void main() {
         );
       });
     }
+
+    test('describes results without the image bytes', () async {
+      final image = await client.generate.core(prompt: 'a cat');
+
+      expect(
+        image.toString(),
+        'GeneratedImage(image/png, ${image.bytes.length} bytes, '
+        'seed: 42, finishReason: success)',
+      );
+      expect(const AsyncGeneration('abc').toString(), 'AsyncGeneration(abc)');
+    });
+
+    test('creates and closes its own HTTP client', () {
+      final own = StabilityClient(apiKey: 'k');
+      expect(own.toString(), 'StabilityClient(https://api.stability.ai)');
+      own.close();
+    });
 
     test('close does not close a client it did not create', () async {
       final inner = _TrackingClient();

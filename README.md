@@ -30,6 +30,12 @@ dart pub add stability_sdk
 
 Create an API key on the [Stability AI platform](https://platform.stability.ai/dashboard/api-keys). Each request uses credits. See [pricing](https://docs.stability.ai/pricing). Failed requests are not charged.
 
+## API version
+
+This package uses Stability AI's REST API under `/v2beta`, the API that all current models and services run on. Stability AI still labels it beta, and there is no stable `/v2` yet, so this package stays below 1.0. Expect a minor version bump (for example 0.2 to 0.3) when the API changes in a way that breaks your code. A `^0.2.0` constraint will not pick that up by itself.
+
+The older `/v1` REST endpoints and the gRPC API are not used. Version 0.1 of this package used the gRPC API.
+
 ## Keep your API key safe
 
 Anyone who has your app can read an API key that ships inside it. For a published app, call Stability AI from your own backend, and point the SDK at that backend with `baseUrl`. Your backend adds the real key. Only put a key in an app for local testing.
@@ -223,6 +229,15 @@ Version 0.2 is a rewrite for Stability AI's current REST API, which is still in 
 | `EngineType` | `generate.ultra`, `generate.core` or `generate.sd35` with `Sd35Model` |
 
 The package also no longer depends on Flutter, `grpc` or `protobuf`.
+
+## Development
+
+```bash
+dart test                       # the package, with a fake API
+cd example && flutter test      # the example app in demo mode
+```
+
+The tests never call the real API, and need no key. CI runs both, plus `dart analyze` and a publish dry run, on every pull request.
 
 ## Not covered yet
 
